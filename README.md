@@ -5,7 +5,8 @@ This repository implements the first production foundation for a combined data m
 ## What is included now
 - Baseline project scaffolding for Phases 2 and 3
 - Metadata and mapping registry modules
-- Starter ingestion, transformation, and quality components
+- Phase 4 incremental ingestion with connector + checkpoints + idempotent manifests
+- Starter transformation and quality components
 - ML anomaly detection baseline module
 - LLM incident explanation interface
 - FastAPI status endpoint
@@ -20,6 +21,15 @@ This repository implements the first production foundation for a combined data m
    - `pytest`
 4. Run API:
    - `uvicorn migration_platform.api.main:app --reload`
+
+## Phase 4 incremental ingestion
+- Connector: `PostgresTableConnector`
+- Checkpoint store: JSON files under `artifacts/bronze/_checkpoints`
+- Snapshot strategy: immutable `snapshot_<run_id>.csv` files in each dataset folder
+- Idempotency: rerun with same `run_id` returns `idempotent_reuse` and avoids duplicate writes
+
+Example run:
+- `python scripts/run_ingestion.py --dataset orders --connection-url postgresql+psycopg://user:pass@host:5432/db --table public.orders --cursor-column order_id --limit 50000`
 
 ## Project layout
 - `src/migration_platform`: core platform modules
