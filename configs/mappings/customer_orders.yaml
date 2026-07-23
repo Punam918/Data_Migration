@@ -1,0 +1,18 @@
+mapping_name: customer_orders
+source:
+  system: legacy_postgres
+  table: public.orders
+target:
+  layer: silver
+  table: sales_orders
+column_mappings:
+  order_id: order_id
+  customer_id: customer_id
+  order_date: order_date
+  total_amount: total_amount
+required_columns:
+  - order_id
+  - customer_id
+  - order_date
+primary_key:
+  - order_id

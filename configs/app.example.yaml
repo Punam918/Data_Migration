@@ -1,0 +1,11 @@
+environment: dev
+storage:
+  bronze_path: artifacts/bronze
+  silver_path: artifacts/silver
+  gold_path: artifacts/gold
+quality:
+  max_null_rate_default: 0.05
+  min_row_count_default: 1
+api:
+  host: 127.0.0.1
+  port: 8000
