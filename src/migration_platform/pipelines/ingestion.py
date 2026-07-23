@@ -94,9 +94,13 @@ class IngestionPipeline:
             frame = frame.drop_duplicates(subset=deduplicate_on, keep="last")
 
         frame.to_csv(snapshot_path, index=False)
-        cursor_end = str(frame.iloc[-1].to_dict().get("id"))
-        if "id" not in frame.columns:
-            cursor_end = str(frame.iloc[-1][frame.columns[0]])
+        if connector.cursor_column not in frame.columns:
+            raise ValueError(
+                "Cursor column '{0}' is not present in fetched batch".format(
+                    connector.cursor_column
+                )
+            )
+        cursor_end = str(frame.iloc[-1][connector.cursor_column])
 
         checksum = self._file_sha256(snapshot_path)
         manifest = {

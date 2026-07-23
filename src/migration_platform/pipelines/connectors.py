@@ -9,6 +9,8 @@ from sqlalchemy.engine import Engine
 
 
 class SourceConnector(Protocol):
+    cursor_column: str
+
     def fetch_batch(self, cursor: Optional[str], limit: int) -> pd.DataFrame:
         """Fetch the next incremental batch after the provided cursor."""
 
