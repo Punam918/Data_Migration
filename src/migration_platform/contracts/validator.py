@@ -10,7 +10,12 @@ class ContractViolation(Exception):
 
 
 class ContractSpec:
-    def __init__(self, required: Optional[List[str]] = None, unique_keys: Optional[List[str]] = None, dtypes: Optional[Dict[str, str]] = None) -> None:
+    def __init__(
+        self,
+        required: Optional[List[str]] = None,
+        unique_keys: Optional[List[str]] = None,
+        dtypes: Optional[Dict[str, str]] = None,
+    ) -> None:
         self.required = required or []
         self.unique_keys = unique_keys or []
         self.dtypes = dtypes or {}
@@ -33,5 +38,7 @@ class ContractSpec:
                 raise ContractViolation(f"Dtype column missing: {col}")
             try:
                 frame[col].astype(dtype)
-            except Exception:
-                raise ContractViolation(f"Column {col} cannot be cast to {dtype}")
+            except Exception as err:
+                raise ContractViolation(
+                    f"Column {col} cannot be cast to {dtype}"
+                ) from err

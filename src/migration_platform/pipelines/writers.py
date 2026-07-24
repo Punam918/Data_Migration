@@ -1,12 +1,17 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Iterable, List, Optional
+from typing import List, Optional, Union
 
 import pandas as pd
 
 
-def write_silver(frame: pd.DataFrame, root: str | Path, dataset: str, partition_by: Optional[List[str]] = None) -> Path:
+def write_silver(
+    frame: pd.DataFrame,
+    root: Union[str, Path],
+    dataset: str,
+    partition_by: Optional[List[str]] = None,
+) -> Path:
     root_path = Path(root)
     ds_dir = root_path / dataset / "silver"
     ds_dir.mkdir(parents=True, exist_ok=True)
@@ -15,7 +20,12 @@ def write_silver(frame: pd.DataFrame, root: str | Path, dataset: str, partition_
     return out_path
 
 
-def write_gold(frame: pd.DataFrame, root: str | Path, dataset: str, partition_by: Optional[List[str]] = None) -> Path:
+def write_gold(
+    frame: pd.DataFrame,
+    root: Union[str, Path],
+    dataset: str,
+    partition_by: Optional[List[str]] = None,
+) -> Path:
     root_path = Path(root)
     ds_dir = root_path / dataset / "gold"
     ds_dir.mkdir(parents=True, exist_ok=True)

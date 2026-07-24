@@ -14,13 +14,13 @@ def cast_columns(frame: pd.DataFrame, casts: Dict[str, str], strict: bool = True
             else:
                 df[col] = None
                 continue
-        try:
-            df[col] = df[col].astype(dtype)
-        except Exception as exc:
-            if strict:
-                raise
-            else:
-                df[col] = df[col].astype(object)
+            try:
+                df[col] = df[col].astype(dtype)
+            except Exception:
+                if strict:
+                    raise
+                else:
+                    df[col] = df[col].astype(object)
     return df
 
 
@@ -47,7 +47,17 @@ def derive_columns(frame: pd.DataFrame, derives: Dict[str, Any]) -> pd.DataFrame
     for col, expr in derives.items():
         # expr is a callable that accepts df and returns a Series
         if callable(expr):
-            df[col] = expr(df)
+            res = expr(df)
+            try:
+                # Try to coerce to numeric if possible (handles strings like '10.5')
+                coerced = pd.to_numeric(res, errors="coerce")
+                # If coercion yields at least one non-null, use it.
+                if coerced.notna().any():
+                    df[col] = coerced
+                else:
+                    df[col] = res
+            except Exception:
+                df[col] = res
         else:
             df[col] = expr
     return df

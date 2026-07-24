@@ -1,9 +1,15 @@
-import pandas as pd
 from pathlib import Path
 
-from migration_platform.pipelines.transforms.operators import cast_columns, apply_defaults, normalize_strings, derive_columns
+import pandas as pd
+
 from migration_platform.contracts.validator import ContractSpec, ContractViolation
-from migration_platform.pipelines.writers import write_silver, write_gold
+from migration_platform.pipelines.transforms.operators import (
+    apply_defaults,
+    cast_columns,
+    derive_columns,
+    normalize_strings,
+)
+from migration_platform.pipelines.writers import write_gold, write_silver
 
 
 def test_transform_and_contract(tmp_path: Path) -> None:
@@ -23,7 +29,11 @@ def test_transform_and_contract(tmp_path: Path) -> None:
     df5 = derive_columns(df4, {"amount_with_tax": lambda d: d["amount"] * 1.1})
 
     # Contract: required columns and unique key
-    spec = ContractSpec(required=["order_id", "customer_id"], unique_keys=["order_id"], dtypes={"amount": "float64"})
+    spec = ContractSpec(
+        required=["order_id", "customer_id"],
+        unique_keys=["order_id"],
+        dtypes={"amount": "float64"},
+    )
     spec.validate(df5)
 
     root = tmp_path / "out"
@@ -39,6 +49,6 @@ def test_contract_violation_missing(tmp_path: Path) -> None:
     spec = ContractSpec(required=["b"]) 
     try:
         spec.validate(df)
-        assert False
+        raise AssertionError("Contract should have failed")
     except ContractViolation:
-        assert True
+        pass
