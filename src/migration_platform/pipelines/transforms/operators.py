@@ -47,7 +47,15 @@ def derive_columns(frame: pd.DataFrame, derives: Dict[str, Any]) -> pd.DataFrame
     for col, expr in derives.items():
         # expr is a callable that accepts df and returns a Series
         if callable(expr):
-            res = expr(df)
+            # Prepare a temp dataframe where object columns that look numeric
+            # are coerced to numeric types so arithmetic in expr works.
+            temp = df.copy()
+            for c in temp.select_dtypes(include=[object]).columns:
+                coerced_col = pd.to_numeric(temp[c], errors="coerce")
+                if coerced_col.notna().any():
+                    temp[c] = coerced_col
+
+            res = expr(temp)
             try:
                 # Try to coerce to numeric if possible (handles strings like '10.5')
                 coerced = pd.to_numeric(res, errors="coerce")
