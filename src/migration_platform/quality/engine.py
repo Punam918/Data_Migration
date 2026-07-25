@@ -1,11 +1,16 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, Optional
+from typing import Callable, List
 
 import pandas as pd
 
-from migration_platform.quality.checks import CheckResult, check_min_rows, check_null_rate, check_unique_key
+from migration_platform.quality.checks import (
+    CheckResult,
+    check_min_rows,
+    check_null_rate,
+    check_unique_key,
+)
 
 
 @dataclass
@@ -32,18 +37,32 @@ class QualityEngine:
             except Exception as err:
                 results.append(CheckResult(check_name=r.name, passed=False, details=str(err)))
                 continue
+            # annotate check result with the rule name for traceability
+            res.check_name = r.name
             results.append(res)
         return results
 
 
 # Helper factory functions for common rules
 def rule_min_rows(minimum: int) -> QualityRule:
-    return QualityRule(name=f"min_rows_{minimum}", func=lambda df: check_min_rows(df, minimum), severity="error")
+    return QualityRule(
+        name=f"min_rows_{minimum}",
+        func=lambda df: check_min_rows(df, minimum),
+        severity="error",
+    )
 
 
 def rule_null_rate(column: str, max_null_rate: float) -> QualityRule:
-    return QualityRule(name=f"null_rate_{column}", func=lambda df: check_null_rate(df, column, max_null_rate), severity="error")
+    return QualityRule(
+        name=f"null_rate_{column}",
+        func=lambda df: check_null_rate(df, column, max_null_rate),
+        severity="error",
+    )
 
 
 def rule_unique_key(columns: List[str]) -> QualityRule:
-    return QualityRule(name=f"unique_key_{'_'.join(columns)}", func=lambda df: check_unique_key(df, columns), severity="error")
+    return QualityRule(
+        name=f"unique_key_{'_'.join(columns)}",
+        func=lambda df: check_unique_key(df, columns),
+        severity="error",
+    )

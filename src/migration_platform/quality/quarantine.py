@@ -12,7 +12,13 @@ class QuarantineWriter:
         self.root = Path(root)
         self.root.mkdir(parents=True, exist_ok=True)
 
-    def write(self, dataset: str, frame: pd.DataFrame, reason: str, run_id: Optional[str] = None) -> Path:
+    def write(
+        self,
+        dataset: str,
+        frame: pd.DataFrame,
+        reason: str,
+        run_id: Optional[str] = None,
+    ) -> Path:
         ds_dir = self.root / dataset
         ds_dir.mkdir(parents=True, exist_ok=True)
         rid = run_id or datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")

@@ -1,9 +1,15 @@
-import pandas as pd
 from pathlib import Path
 
-from migration_platform.quality.engine import QualityEngine, rule_min_rows, rule_null_rate, rule_unique_key
-from migration_platform.quality.reconciliation import reconcile_counts, reconcile_keys_checksum
+import pandas as pd
+
+from migration_platform.quality.engine import (
+    QualityEngine,
+    rule_min_rows,
+    rule_null_rate,
+    rule_unique_key,
+)
 from migration_platform.quality.quarantine import QuarantineWriter
+from migration_platform.quality.reconciliation import reconcile_counts, reconcile_keys_checksum
 
 
 def test_quality_engine_and_quarantine(tmp_path: Path) -> None:

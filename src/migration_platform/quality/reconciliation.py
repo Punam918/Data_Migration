@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Tuple
-
 import hashlib
+from typing import List, Tuple
+
 import pandas as pd
 
 
@@ -29,7 +29,9 @@ def reconcile_counts(source: pd.DataFrame, target: pd.DataFrame) -> Tuple[int, i
     return s, t, diff
 
 
-def reconcile_keys_checksum(source: pd.DataFrame, target: pd.DataFrame, keys: List[str]) -> Tuple[str, str, bool]:
+def reconcile_keys_checksum(
+    source: pd.DataFrame, target: pd.DataFrame, keys: List[str]
+) -> Tuple[str, str, bool]:
     s_hash = table_checksum_on_keys(source, keys)
     t_hash = table_checksum_on_keys(target, keys)
     return s_hash, t_hash, s_hash == t_hash
