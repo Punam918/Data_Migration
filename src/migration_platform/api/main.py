@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 from fastapi import FastAPI
+from migration_platform.observability.api import router as observability_router
 
 app = FastAPI(title="Migration Intelligence API", version="0.1.0")
+app.include_router(observability_router)
 
 
 @app.get("/health")
