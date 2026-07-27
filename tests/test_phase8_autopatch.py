@@ -32,5 +32,5 @@ def test_autopatch_suggests_on_unique_key_failure(tmp_path):
     result = runner.execute(df, mapping)
 
     patches = runner.patch_mgr.list_patches()
-    assert any(p["type"] == "unique_constraint" for p in patches)
-    assert result.transformed_rows == len(result.quality_results) or isinstance(result.transformed_rows, int)
+    assert any(p.get("metadata", {}).get("type") == "unique_constraint" for p in patches)
+    assert isinstance(result.transformed_rows, int)
