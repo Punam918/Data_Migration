@@ -1,2 +1,4 @@
 {"name": "quality:unique_key", "severity": "high", "message": "key=['id'], duplicates=1", "metadata": {"mapping": "autopatch_map"}, "ts": "2026-07-27T14:24:26.278551Z"}
 {"name": "anomaly:detection", "severity": "medium", "message": "1 anomalies detected", "metadata": {"mapping": "autopatch_map", "anomalies": 1}, "ts": "2026-07-27T14:24:26.299880Z"}
+{"name": "quality:unique_key", "severity": "high", "message": "key=['id'], duplicates=1", "metadata": {"mapping": "autopatch_map"}, "ts": "2026-07-27T14:25:45.252257Z"}
+{"name": "anomaly:detection", "severity": "medium", "message": "1 anomalies detected", "metadata": {"mapping": "autopatch_map", "anomalies": 1}, "ts": "2026-07-27T14:25:45.254773Z"}
