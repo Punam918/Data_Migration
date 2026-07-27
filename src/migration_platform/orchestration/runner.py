@@ -13,6 +13,7 @@ from migration_platform.observability.metrics import MetricEmitter
 from migration_platform.observability.lineage import LineageStore
 from migration_platform.observability.alerts import AlertManager
 from pathlib import Path
+from migration_platform.governance.patcher import PatchManager
 
 
 @dataclass
@@ -33,6 +34,9 @@ class OrchestrationRunner:
         self.metrics = MetricEmitter(root)
         self.lineage = LineageStore(root)
         self.alerts = AlertManager(root)
+        # governance patch manager
+        gov_root = Path("./var/governance")
+        self.patch_mgr = PatchManager(gov_root)
 
     def execute(self, frame: pd.DataFrame, mapping: MappingSpec) -> OrchestrationResult:
         transformed = self.transformer.transform(frame, mapping)
@@ -63,13 +67,43 @@ class OrchestrationRunner:
         tgt_table = getattr(mapping.target, "table", "unknown") or "unknown"
         self.lineage.add(dataset=mapping.mapping_name, operation="transform", inputs=[src_table], outputs=[tgt_table], metadata={"rows": len(transformed)})
 
-        # Create alerts for failed quality checks or anomalies
+        # Create alerts for failed quality checks or anomalies and suggest patches
         for chk in quality:
             if not chk.passed:
                 self.alerts.create_alert(name=f"quality:{chk.check_name}", severity="high", message=chk.details, metadata={"mapping": mapping.mapping_name})
 
+                # Suggest governance patches for common failures
+                try:
+                    if chk.check_name == "unique_key":
+                        title = f"add-unique-constraint-{mapping.mapping_name}"
+                        desc = f"Suggest adding unique constraint on {mapping.primary_key} for mapping {mapping.mapping_name}"
+                        meta = {"mapping": mapping.mapping_name, "type": "unique_constraint", "columns": mapping.primary_key}
+                        self.patch_mgr.suggest_patch(title, desc, metadata=meta)
+                    elif chk.check_name == "null_rate":
+                        # attempt to parse column from details string like 'column=colname, null_rate=0.1234'
+                        parts = chk.details.split(",")
+                        col = None
+                        for p in parts:
+                            if p.strip().startswith("column="):
+                                col = p.split("=", 1)[1].strip()
+                                break
+                        title = f"backfill-or-notnull-{mapping.mapping_name}-{col or 'unknown'}"
+                        desc = f"Suggest backfilling or enforcing NOT NULL on column {col} for mapping {mapping.mapping_name}"
+                        meta = {"mapping": mapping.mapping_name, "type": "not_null", "column": col}
+                        self.patch_mgr.suggest_patch(title, desc, metadata=meta)
+                except Exception:
+                    # non-fatal if patch suggestion fails
+                    pass
+
         if anomalies_count > 0:
             self.alerts.create_alert(name="anomaly:detection", severity="medium", message=f"{anomalies_count} anomalies detected", metadata={"mapping": mapping.mapping_name, "anomalies": anomalies_count})
+            try:
+                title = f"investigate-anomalies-{mapping.mapping_name}"
+                desc = f"Investigate {anomalies_count} anomalies detected for mapping {mapping.mapping_name}"
+                meta = {"mapping": mapping.mapping_name, "type": "investigation", "anomalies": anomalies_count}
+                self.patch_mgr.suggest_patch(title, desc, metadata=meta)
+            except Exception:
+                pass
 
         return OrchestrationResult(
             transformed_rows=len(transformed),
