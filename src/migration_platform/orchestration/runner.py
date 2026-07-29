@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 
 import pandas as pd
 
@@ -19,8 +19,9 @@ from migration_platform.governance.patcher import PatchManager
 @dataclass
 class OrchestrationResult:
     transformed_rows: int
-    quality_results: list[CheckResult]
+    quality_results: List[CheckResult]
     incident_report: IncidentReport
+    suggested_patches: List[Dict[str, Any]]
 
 
 class OrchestrationRunner:
@@ -68,9 +69,9 @@ class OrchestrationRunner:
         self.lineage.add(dataset=mapping.mapping_name, operation="transform", inputs=[src_table], outputs=[tgt_table], metadata={"rows": len(transformed)})
 
         # Create alerts for failed quality checks or anomalies and suggest patches
-            suggested: List[Dict[str, Any]] = []
-        
-            for chk in quality:
+        suggested: List[Dict[str, Any]] = []
+
+        for chk in quality:
             if not chk.passed:
                 self.alerts.create_alert(name=f"quality:{chk.check_name}", severity="high", message=chk.details, metadata={"mapping": mapping.mapping_name})
 
@@ -80,8 +81,8 @@ class OrchestrationRunner:
                         title = f"add-unique-constraint-{mapping.mapping_name}"
                         desc = f"Suggest adding unique constraint on {mapping.primary_key} for mapping {mapping.mapping_name}"
                         meta = {"mapping": mapping.mapping_name, "type": "unique_constraint", "columns": mapping.primary_key}
-                            rec = self.patch_mgr.suggest_patch(title, desc, metadata=meta)
-                            suggested.append(asdict(rec))
+                        rec = self.patch_mgr.suggest_patch(title, desc, metadata=meta)
+                        suggested.append(asdict(rec))
                     elif chk.check_name == "null_rate":
                         # attempt to parse column from details string like 'column=colname, null_rate=0.1234'
                         parts = chk.details.split(",")
@@ -93,8 +94,8 @@ class OrchestrationRunner:
                         title = f"backfill-or-notnull-{mapping.mapping_name}-{col or 'unknown'}"
                         desc = f"Suggest backfilling or enforcing NOT NULL on column {col} for mapping {mapping.mapping_name}"
                         meta = {"mapping": mapping.mapping_name, "type": "not_null", "column": col}
-                            rec = self.patch_mgr.suggest_patch(title, desc, metadata=meta)
-                            suggested.append(asdict(rec))
+                        rec = self.patch_mgr.suggest_patch(title, desc, metadata=meta)
+                        suggested.append(asdict(rec))
                 except Exception:
                     # non-fatal if patch suggestion fails
                     pass
@@ -105,8 +106,8 @@ class OrchestrationRunner:
                 title = f"investigate-anomalies-{mapping.mapping_name}"
                 desc = f"Investigate {anomalies_count} anomalies detected for mapping {mapping.mapping_name}"
                 meta = {"mapping": mapping.mapping_name, "type": "investigation", "anomalies": anomalies_count}
-                    rec = self.patch_mgr.suggest_patch(title, desc, metadata=meta)
-                    suggested.append(asdict(rec))
+                rec = self.patch_mgr.suggest_patch(title, desc, metadata=meta)
+                suggested.append(asdict(rec))
             except Exception:
                 pass
 
@@ -114,5 +115,5 @@ class OrchestrationRunner:
             transformed_rows=len(transformed),
             quality_results=quality,
             incident_report=report,
-                suggested_patches=suggested,
+            suggested_patches=suggested,
         )
