@@ -20,6 +20,9 @@ def test_governance_ui_and_patch_flow(tmp_path, monkeypatch):
     assert ui_response.status_code == 200
     assert "Patch Review Desk" in ui_response.text
     assert "/governance/patches" in ui_response.text
+    assert "search title, description, metadata, or patch id" in ui_response.text.lower()
+    assert "Suggested" in ui_response.text
+    assert "Applied" in ui_response.text
 
     list_response = client.get("/governance/patches")
     assert list_response.status_code == 200
