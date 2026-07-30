@@ -22,3 +22,9 @@
 {"name": "quality_check", "value": 1.0, "tags": {"mapping": "autopatch_map", "check": "null_rate"}, "ts": "2026-07-30T00:48:35.429415Z"}
 {"name": "quality_check", "value": 0.0, "tags": {"mapping": "autopatch_map", "check": "unique_key"}, "ts": "2026-07-30T00:48:35.430467Z"}
 {"name": "anomalies_count", "value": 1.0, "tags": {"mapping": "autopatch_map"}, "ts": "2026-07-30T00:48:35.431552Z"}
+{"name": "transformed_rows", "value": 3.0, "tags": {"mapping": "autopatch_map"}, "ts": "2026-07-30T00:51:05.053391Z"}
+{"name": "quality_check", "value": 1.0, "tags": {"mapping": "autopatch_map", "check": "min_rows"}, "ts": "2026-07-30T00:51:05.055110Z"}
+{"name": "quality_check", "value": 1.0, "tags": {"mapping": "autopatch_map", "check": "null_rate"}, "ts": "2026-07-30T00:51:05.055939Z"}
+{"name": "quality_check", "value": 1.0, "tags": {"mapping": "autopatch_map", "check": "null_rate"}, "ts": "2026-07-30T00:51:05.057214Z"}
+{"name": "quality_check", "value": 0.0, "tags": {"mapping": "autopatch_map", "check": "unique_key"}, "ts": "2026-07-30T00:51:05.058728Z"}
+{"name": "anomalies_count", "value": 1.0, "tags": {"mapping": "autopatch_map"}, "ts": "2026-07-30T00:51:05.058728Z"}
