@@ -1,8 +1,5 @@
-import json
-from pathlib import Path
 
 from migration_platform.governance.patcher import PatchManager
-
 from scripts.patch_review import main
 
 

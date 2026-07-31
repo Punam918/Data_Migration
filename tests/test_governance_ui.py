@@ -38,7 +38,10 @@ def test_governance_ui_and_patch_flow(tmp_path, monkeypatch):
     assert any(item["id"] == first.id for item in payload)
     assert any(item["id"] == second.id for item in payload)
 
-    filtered_response = client.get("/governance/patches", params={"q": "orders", "status": "suggested"})
+    filtered_response = client.get(
+        "/governance/patches",
+        params={"q": "orders", "status": "suggested"},
+    )
     assert filtered_response.status_code == 200
     filtered_payload = filtered_response.json()
     assert len(filtered_payload) == 1

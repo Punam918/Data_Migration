@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Dict, List
 
 import pandas as pd
 
 from migration_platform.governance.patcher import PatchManager
-from migration_platform.metadata.mapping_loader import MappingSpec
 from migration_platform.llm.explainer import IncidentExplainer, IncidentReport
+from migration_platform.metadata.mapping_loader import MappingSpec
 from migration_platform.ml.anomaly import TableAnomalyDetector
 from migration_platform.observability.alerts import AlertManager
 from migration_platform.observability.lineage import LineageStore
@@ -114,7 +114,8 @@ class OrchestrationRunner:
                         rec = self.patch_mgr.suggest_patch(title, desc, metadata=meta)
                         suggested.append(asdict(rec))
                     elif chk.check_name == "null_rate":
-                        # attempt to parse column from details string like 'column=colname, null_rate=0.1234'
+                        # Parse the column from details strings like
+                        # "column=colname, null_rate=0.1234".
                         parts = chk.details.split(",")
                         col = None
                         for p in parts:

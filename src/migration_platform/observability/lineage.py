@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, asdict
+import json
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
-
-import json
 
 
 @dataclass
@@ -29,7 +28,14 @@ class LineageStore:
         self.root.mkdir(parents=True, exist_ok=True)
         self.path = self.root / "lineage.jsonl"
 
-    def add(self, dataset: str, operation: str, inputs: List[str], outputs: List[str], metadata: Optional[Dict[str, Any]] = None) -> None:
+    def add(
+        self,
+        dataset: str,
+        operation: str,
+        inputs: List[str],
+        outputs: List[str],
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> None:
         meta = metadata or {}
         ts = datetime.utcnow().isoformat() + "Z"
         entry = LineageEntry(
