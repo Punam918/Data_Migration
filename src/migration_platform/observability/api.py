@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, HTTPException
 from pathlib import Path
-from typing import Any
+from fastapi import APIRouter
 
-from .metrics import MetricEmitter
-from .lineage import LineageStore
 from .alerts import AlertManager
+from .lineage import LineageStore
+from .metrics import MetricEmitter
 
 router = APIRouter()
+
 
 @router.get("/observability/metrics")
 def get_metrics(limit: int = 100):

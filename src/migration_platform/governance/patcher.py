@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, asdict
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import json
 import uuid
@@ -31,7 +31,12 @@ class PatchManager:
         self.dir = self.root / "patches"
         self.dir.mkdir(parents=True, exist_ok=True)
 
-    def suggest_patch(self, title: str, description: str, metadata: Optional[Dict[str, Any]] = None) -> PatchRecord:
+    def suggest_patch(
+        self,
+        title: str,
+        description: str,
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> PatchRecord:
         metadata = metadata or {}
         pid = uuid.uuid4().hex
         rec = PatchRecord(

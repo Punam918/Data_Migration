@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, asdict
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, List, Union, Optional
+from typing import Any, Dict, List, Optional, Union
 
 import json
 
@@ -25,9 +25,16 @@ class AlertManager:
         self.root.mkdir(parents=True, exist_ok=True)
         self.path = self.root / "alerts.jsonl"
 
-    def create_alert(self, name: str, severity: str, message: str, metadata: Optional[Dict[str, Any]] = None) -> None:
+    def create_alert(
+        self,
+        name: str,
+        severity: str,
+        message: str,
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> None:
         meta = metadata or {}
-        alert = Alert(name=name, severity=severity, message=message, metadata=meta, ts=datetime.utcnow().isoformat() + "Z")
+        ts = datetime.utcnow().isoformat() + "Z"
+        alert = Alert(name=name, severity=severity, message=message, metadata=meta, ts=ts)
         with self.path.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(asdict(alert)) + "\n")
 

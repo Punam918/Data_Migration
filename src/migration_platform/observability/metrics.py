@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, asdict
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, Union, Optional, List
+from typing import Any, Dict, List, Optional, Union
 
 import json
 
@@ -29,7 +29,8 @@ class MetricEmitter:
 
     def emit(self, name: str, value: float, tags: Optional[Dict[str, str]] = None) -> None:
         tags = tags or {}
-        record = Metric(name=name, value=float(value), tags=tags, ts=datetime.utcnow().isoformat() + "Z")
+        ts = datetime.utcnow().isoformat() + "Z"
+        record = Metric(name=name, value=float(value), tags=tags, ts=ts)
         with self.path.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(asdict(record)) + "\n")
 
