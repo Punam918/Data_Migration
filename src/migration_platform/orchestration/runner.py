@@ -106,7 +106,7 @@ class OrchestrationRunner:
                             f"Suggest adding unique constraint on {mapping.primary_key} "
                             f"for mapping {mapping.mapping_name}"
                         )
-                        meta = {
+                        meta: Dict[str, Any] = {
                             "mapping": mapping.mapping_name,
                             "type": "unique_constraint",
                             "columns": mapping.primary_key,
@@ -127,7 +127,7 @@ class OrchestrationRunner:
                             f"Suggest backfilling or enforcing NOT NULL on column {col} "
                             f"for mapping {mapping.mapping_name}"
                         )
-                        meta = {
+                        meta: Dict[str, Any] = {
                             "mapping": mapping.mapping_name,
                             "type": "not_null",
                             "column": col,
@@ -151,7 +151,7 @@ class OrchestrationRunner:
                     f"Investigate {anomalies_count} anomalies detected for mapping "
                     f"{mapping.mapping_name}"
                 )
-                meta = {
+                meta: Dict[str, Any] = {
                     "mapping": mapping.mapping_name,
                     "type": "investigation",
                     "anomalies": anomalies_count,

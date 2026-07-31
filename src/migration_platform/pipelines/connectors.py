@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import List, Optional, Protocol, Sequence
+from typing import Any, Dict, List, Optional, Protocol, Sequence
 
 import pandas as pd
 from sqlalchemy import create_engine, text
@@ -36,7 +36,7 @@ class PostgresTableConnector:
         ]
 
         conditions: List[str] = []
-        params = {"limit": limit}
+        params: Dict[str, Any] = {"limit": limit}
 
         if self.extra_where:
             conditions.append("({0})".format(self.extra_where))
