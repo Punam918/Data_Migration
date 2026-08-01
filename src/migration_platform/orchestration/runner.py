@@ -106,12 +106,12 @@ class OrchestrationRunner:
                             f"Suggest adding unique constraint on {mapping.primary_key} "
                             f"for mapping {mapping.mapping_name}"
                         )
-                        meta: Dict[str, Any] = {
+                        patch_meta: Dict[str, Any] = {
                             "mapping": mapping.mapping_name,
                             "type": "unique_constraint",
                             "columns": mapping.primary_key,
                         }
-                        rec = self.patch_mgr.suggest_patch(title, desc, metadata=meta)
+                        rec = self.patch_mgr.suggest_patch(title, desc, metadata=patch_meta)
                         suggested.append(asdict(rec))
                     elif chk.check_name == "null_rate":
                         # Parse the column from details strings like
@@ -127,12 +127,12 @@ class OrchestrationRunner:
                             f"Suggest backfilling or enforcing NOT NULL on column {col} "
                             f"for mapping {mapping.mapping_name}"
                         )
-                        meta: Dict[str, Any] = {
+                        patch_meta: Dict[str, Any] = {
                             "mapping": mapping.mapping_name,
                             "type": "not_null",
                             "column": col,
                         }
-                        rec = self.patch_mgr.suggest_patch(title, desc, metadata=meta)
+                        rec = self.patch_mgr.suggest_patch(title, desc, metadata=patch_meta)
                         suggested.append(asdict(rec))
                 except Exception:
                     # non-fatal if patch suggestion fails
@@ -151,12 +151,12 @@ class OrchestrationRunner:
                     f"Investigate {anomalies_count} anomalies detected for mapping "
                     f"{mapping.mapping_name}"
                 )
-                meta: Dict[str, Any] = {
+                patch_meta: Dict[str, Any] = {
                     "mapping": mapping.mapping_name,
                     "type": "investigation",
                     "anomalies": anomalies_count,
                 }
-                rec = self.patch_mgr.suggest_patch(title, desc, metadata=meta)
+                rec = self.patch_mgr.suggest_patch(title, desc, metadata=patch_meta)
                 suggested.append(asdict(rec))
             except Exception:
                 pass
