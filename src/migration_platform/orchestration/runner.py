@@ -106,13 +106,15 @@ class OrchestrationRunner:
                             f"Suggest adding unique constraint on {mapping.primary_key} "
                             f"for mapping {mapping.mapping_name}"
                         )
-                        patch_meta: Dict[str, Any] = {
+                        patch_meta_unique: Dict[str, Any] = {
                             "mapping": mapping.mapping_name,
                             "type": "unique_constraint",
                             "columns": mapping.primary_key,
                         }
-                        rec = self.patch_mgr.suggest_patch(title, desc, metadata=patch_meta)
-                        suggested.append(asdict(rec))
+                        rec_unique = self.patch_mgr.suggest_patch(
+                            title, desc, metadata=patch_meta_unique
+                        )
+                        suggested.append(asdict(rec_unique))
                     elif chk.check_name == "null_rate":
                         # Parse the column from details strings like
                         # "column=colname, null_rate=0.1234".
@@ -127,13 +129,15 @@ class OrchestrationRunner:
                             f"Suggest backfilling or enforcing NOT NULL on column {col} "
                             f"for mapping {mapping.mapping_name}"
                         )
-                        patch_meta: Dict[str, Any] = {
+                        patch_meta_not_null: Dict[str, Any] = {
                             "mapping": mapping.mapping_name,
                             "type": "not_null",
                             "column": col,
                         }
-                        rec = self.patch_mgr.suggest_patch(title, desc, metadata=patch_meta)
-                        suggested.append(asdict(rec))
+                        rec_not_null = self.patch_mgr.suggest_patch(
+                            title, desc, metadata=patch_meta_not_null
+                        )
+                        suggested.append(asdict(rec_not_null))
                 except Exception:
                     # non-fatal if patch suggestion fails
                     pass
@@ -151,13 +155,15 @@ class OrchestrationRunner:
                     f"Investigate {anomalies_count} anomalies detected for mapping "
                     f"{mapping.mapping_name}"
                 )
-                patch_meta: Dict[str, Any] = {
+                patch_meta_investigation: Dict[str, Any] = {
                     "mapping": mapping.mapping_name,
                     "type": "investigation",
                     "anomalies": anomalies_count,
                 }
-                rec = self.patch_mgr.suggest_patch(title, desc, metadata=patch_meta)
-                suggested.append(asdict(rec))
+                rec_investigation = self.patch_mgr.suggest_patch(
+                    title, desc, metadata=patch_meta_investigation
+                )
+                suggested.append(asdict(rec_investigation))
             except Exception:
                 pass
 
