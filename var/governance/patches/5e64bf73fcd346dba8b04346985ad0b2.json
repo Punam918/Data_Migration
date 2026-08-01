@@ -1,0 +1,1 @@
+{"id": "5e64bf73fcd346dba8b04346985ad0b2", "title": "investigate-anomalies-test_map", "description": "Investigate 1 anomalies detected for mapping test_map", "status": "suggested", "metadata": {"mapping": "test_map", "type": "investigation", "anomalies": 1}, "created_at": "2026-08-01T00:04:40.483212Z", "applied_at": null}
