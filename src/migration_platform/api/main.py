@@ -4,8 +4,8 @@ from pathlib import Path
 from typing import Dict
 
 from fastapi import FastAPI
-from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 
 from migration_platform.governance.api import router as governance_router
 from migration_platform.observability.api import router as observability_router
